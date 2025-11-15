@@ -1,7 +1,13 @@
+using Application.Quizzes.Commands;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreConnection")));
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateQuiz.Handler>());
 
 var app = builder.Build();
 
