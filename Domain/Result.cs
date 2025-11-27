@@ -8,6 +8,8 @@ public class Result
     public float ScorePoint { get; set; }
     public int DurationSeconds { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public required string UserId { get; set; }
     public required User Users { get; set; }
+    public required string QuizId { get; set; }
     public required Quiz Quiz { get; set; }
 }

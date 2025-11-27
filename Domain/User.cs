@@ -12,6 +12,7 @@ public class User
     public required string DisplayName { get; set; }
     public DateTime RegistredAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public required string RoleId { get; set; }
     public required Role Role { get; set; }
     public virtual ICollection<Result> Results { get; set; } = new List<Result>();
 }
