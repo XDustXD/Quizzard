@@ -15,4 +15,15 @@
     <PackageReference Include="MediatR" Version="13.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Answers/Commands/" />
+    <Folder Include="Results/" />
+    <Folder Include="Results/Commands/" />
+    <Folder Include="Results/Queries/" />
+    <Folder Include="Roles/Commands/" />
+    <Folder Include="Users/" />
+    <Folder Include="Users/Commands/" />
+    <Folder Include="Users/Queries/" />
+  </ItemGroup>
+
 </Project>

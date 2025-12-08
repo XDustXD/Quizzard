@@ -16,7 +16,7 @@ public class CategoriesController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<List<Category>>> GetCategories()
     {
-        return await Mediator.Send(new GetCategories.Query());    
+        return await Mediator.Send(new GetCategories.Query());
     }
 
     [HttpDelete("{id}")]
@@ -30,7 +30,7 @@ public class CategoriesController : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Category>> GetCategory(string id)
     {
-        return await Mediator.Send(new GetCategory.Query() {Id = id});
+        return await Mediator.Send(new GetCategory.Query() { Id = id });
     }
 
     [HttpPut]
