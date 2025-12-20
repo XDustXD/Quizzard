@@ -12,7 +12,7 @@ public class GetRoles
     {
         public async Task<IEnumerable<GetRoleDto>> Handle(Query request, CancellationToken cancellationToken)
         {
-            // var roles = await context.Roles.ToListAsync(cancellationToken);
+            var roles = await context.Roles.ToListAsync(cancellationToken);
 
             // var roleDtos = roles.Select(x => new GetRoleDto()
             // {

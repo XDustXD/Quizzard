@@ -21,6 +21,7 @@ public class GetQuizzes
                 Id = x.Id,
                 Title = x.Title,
                 Description = x.Description,
+                TimeLimit = x.TimeLimit,
                 CategoryId = x.CategoryId,
                 CategoryName = x.Category.Name 
             }).ToList();

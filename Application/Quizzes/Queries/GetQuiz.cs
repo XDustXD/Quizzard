@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -25,6 +26,7 @@ public class GetQuiz
                 Id = quiz.Id,
                 Title = quiz.Title,
                 Description = quiz.Description,
+                TimeLimit = quiz.TimeLimit,
                 CategoryId = quiz.CategoryId,
                 CategoryName = quiz.Category.Name
             };

@@ -23,4 +23,8 @@ public class QuizzesController : BaseApiController
     {
         return await Mediator.Send(new PostQuiz.Command() { PostQuizDto = quizDto });
     }
+
+    // [HttpDelete("{id}")]
+    // public async Task
+    
 }
