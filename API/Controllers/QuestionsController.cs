@@ -1,14 +1,34 @@
-using Application.Questions.Queries;
+using Application.Dto.Questions;
+using Application.Features.Questions.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class QuestionsController : BaseApiController 
+public class QuestionsController : BaseApiController
 {
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetQuestionDto>>> GetQuestions()
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<string>> PostQuestion(PostQuestionDto questionDto)
     {
-        var questions = await Mediator.Send(new GetQuetions.Query());
-        return Ok(questions);
+        return await Mediator.Send(new PostQuestion.Command { QuiestionDto = questionDto });
+    }
+
+    [HttpPut]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> PutQuestion(PutQuestionDto questionDto)
+    {
+        await Mediator.Send(new PutQuestion.Command { QuestionDto = questionDto });
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> DeleteQuestion(string id)
+    {
+        await Mediator.Send(new DeleteQuestion.Command { Id = id });
+
+        return NoContent();
     }
 }

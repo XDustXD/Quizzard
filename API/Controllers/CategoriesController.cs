@@ -1,5 +1,6 @@
-using Application.Categories.Commands;
-using Application.Categories.Queries;
+using Application.Dto.Categories;
+using Application.Features.Categories.Commands;
+using Application.Features.Categories.Queries;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,16 +13,21 @@ public class CategoriesController : BaseApiController
     [HttpPost]
     public async Task<ActionResult<string>> PostCategory(Category category)
     {
-        return await Mediator.Send(new PostCategory.Command { Category = category });
+        var id = await Mediator.Send(new PostCategory.Command { Category = category });
+
+        return Ok(new { Id = id });
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Category>>> GetCategories()
+    public async Task<ActionResult<IEnumerable<GetCategoryDto>>> GetCategories()
     {
-        return await Mediator.Send(new GetCategories.Query());
+        var categories = await Mediator.Send(new GetCategories.Query());
+
+        return Ok(categories);
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> DeleteCategory(string id)
     {
         await Mediator.Send(new DeleteCategory.Command { Id = id });
@@ -30,15 +36,15 @@ public class CategoriesController : BaseApiController
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Category>> GetCategory(string id)
+    public async Task<ActionResult<GetCategoryDto>> GetCategory(string id)
     {
         return await Mediator.Send(new GetCategory.Query() { Id = id });
     }
 
     [HttpPut]
-    public async Task<ActionResult> PutCategory(Category category)
+    public async Task<ActionResult> PutCategory(PutCategoryDto categoryDto)
     {
-        await Mediator.Send(new PutCategory.Command { Category = category });
+        await Mediator.Send(new PutCategory.Command { CategoryDto = categoryDto });
 
         return NoContent();
     }

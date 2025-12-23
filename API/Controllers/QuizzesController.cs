@@ -1,5 +1,10 @@
+using Application.Dto.Questions;
+using Application.Dto.Quizzes;
+using Application.Features.Questions.Queries;
+using Application.Features.Quizzes.Commands;
+using Application.Features.Quizzes.Queries;
 using Application.Quizzes.Commands;
-using Application.Quizzes.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -7,24 +12,43 @@ namespace API.Controllers;
 public class QuizzesController : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<List<GetQuizDto>>> GetQuizzes()
+    public async Task<ActionResult<IEnumerable<GetQuizInfoDto>>> GetQuizzesInfo()
     {
-        return await Mediator.Send(new GetQuizzes.Query());
+        var quizzes = await Mediator.Send(new GetQuizzesInfo.Query());
+
+        return Ok(quizzes);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetQuizDto>> GetQuiz(string id)
+    public async Task<ActionResult<GetQuizInfoDto>> GetQuizInfo(string id)
     {
-        return await Mediator.Send(new GetQuiz.Query() { Id = id });
+        return await Mediator.Send(new GetQuizInfo.Query() { Id = id });
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<string>> PostQuiz(PostQuizDto quizDto)
     {
-        return await Mediator.Send(new PostQuiz.Command() { PostQuizDto = quizDto });
+        var id = await Mediator.Send(new PostQuiz.Command() { PostQuizDto = quizDto });
+
+        return Ok(new { Id = id });
     }
 
-    // [HttpDelete("{id}")]
-    // public async Task
-    
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> DeleteQuiz(string id)
+    {
+        await Mediator.Send(new DeleteQuiz.Command() { Id = id });
+
+        return NoContent();
+    }
+
+    [HttpGet("{quizId}/questions")]
+    public async Task<ActionResult<IEnumerable<GetQuestionDto>>> GetQuestionByQuiz(string quizID)
+    {
+        var questions = await Mediator.Send(new GetQuestionsByQuiz.Query() { QuizId = quizID });
+
+        return Ok(questions);
+    }
+
 }

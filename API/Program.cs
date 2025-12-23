@@ -1,25 +1,22 @@
 using System.Text;
-using Application.Categories.Commands;
-using Application.Services;
-using Domain.Interfaces;
+using Application.Features.Categories.Commands;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
-using Persistence.Authentication;
+using Persistence.Authentication.Implementation;
+using Persistence.Authentication.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options => 
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreConnection")));
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<PostCategory.Handler>());
 builder.Services.AddCors();
 
 // 2. DI Registration (Connecting Interfaces to Implementations)
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 

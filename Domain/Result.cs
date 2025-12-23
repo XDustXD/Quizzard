@@ -9,7 +9,7 @@ public class Result
     public int DurationSeconds { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public required string UserId { get; set; }
-    public required User Users { get; set; }
+    public User Users { get; set; } = null!;
     public required string QuizId { get; set; }
-    public required Quiz Quiz { get; set; }
+    public Quiz Quiz { get; set; } = null!;
 }

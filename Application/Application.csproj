@@ -16,15 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Answers/Commands/" />
-    <Folder Include="Results/" />
-    <Folder Include="Results/Commands/" />
-    <Folder Include="Results/Queries/" />
-    <Folder Include="Roles/Commands/" />
-    <Folder Include="Services/" />
-    <Folder Include="Users/" />
-    <Folder Include="Users/Commands/" />
-    <Folder Include="Users/Queries/" />
+    <Folder Include="Dto/Categories/" />
   </ItemGroup>
 
 </Project>
