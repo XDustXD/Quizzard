@@ -1,21 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Box, Typography, Button, Paper, Radio, FormControlLabel, Checkbox, LinearProgress } from '@mui/material';
 import type { Quiz } from '../types';
 
 interface Props {
   quiz: Quiz;
-  onComplete: (score: number, timeTaken: number) => void;
+  onComplete: (selectedAnswers: Record<string, string[]>, timeTaken: number) => void;
 }
 
 const QuizPlayer = ({ quiz, onComplete }: Props) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
+  const [answersMap, setAnswersMap] = useState<Record<string, string[]>>({});
   const [timeLeft, setTimeLeft] = useState(quiz.timeLimit);
-  const [correctCount, setCorrectCount] = useState(0);
 
   const currentQuestion = quiz.questions?.[currentIdx];
 
-  // Timer Logic
+  const handleFinish = useCallback(() => {
+    const finalMap = currentQuestion ? { ...answersMap, [currentQuestion.id]: selectedAnswers } : answersMap;
+
+    const timeTaken = quiz.timeLimit - timeLeft;
+    onComplete(finalMap, timeTaken);
+  }, [answersMap, selectedAnswers, currentQuestion, quiz.timeLimit, onComplete, timeLeft]);
+
   useEffect(() => {
     if (timeLeft <= 0) {
       handleFinish();
@@ -23,47 +29,47 @@ const QuizPlayer = ({ quiz, onComplete }: Props) => {
     }
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, handleFinish]);
 
   const handleAnswerToggle = (answerId: string) => {
-    if (currentQuestion?.isMultipleChoice) {
-      setSelectedAnswers(prev => 
-        prev.includes(answerId) ? prev.filter(id => id !== answerId) : [...prev, answerId]
-      );
-    } else {
-      setSelectedAnswers([answerId]);
-    }
+    if (!currentQuestion) return;
+
+    const questionId = currentQuestion.id;
+
+    setSelectedAnswers(prev => {
+      let next: string[];
+      if (currentQuestion.isMultipleChoice) {
+        next = prev.includes(answerId) ? prev.filter(id => id !== answerId) : [...prev, answerId];
+      } else {
+        next = [answerId];
+      }
+
+      setAnswersMap(m => ({ ...m, [questionId]: next }));
+      return next;
+    });
   };
 
   const handleNext = () => {
-    // Basic scoring logic: check if selected answers match correct answers
-    const correctIds = currentQuestion?.answers.filter(a => a.isCorrect).map(a => a.id) || [];
-    const isCorrect = selectedAnswers.length === correctIds.length && 
-                      selectedAnswers.every(id => correctIds.includes(id));
-    
-    if (isCorrect) setCorrectCount(prev => prev + 1);
-
     if (currentIdx + 1 < (quiz.questions?.length || 0)) {
-      setCurrentIdx(prev => prev + 1);
-      setSelectedAnswers([]);
+      const nextIdx = currentIdx + 1;
+      setCurrentIdx(nextIdx);
+      const nextQuestionId = quiz.questions?.[nextIdx]?.id;
+      setSelectedAnswers(nextQuestionId ? (answersMap[nextQuestionId] || []) : []);
     } else {
       handleFinish();
     }
   };
 
-  const handleFinish = () => {
-    const timeTaken = quiz.timeLimit - timeLeft;
-    onComplete(correctCount, timeTaken);
-  };
+  
 
-  if (!currentQuestion) return <Typography>No questions found.</Typography>;
+  if (!currentQuestion) return <Typography>Вопросов не найдено</Typography>;
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h6">Question {currentIdx + 1}/{quiz.questions?.length}</Typography>
+        <Typography variant="h6">Вопрос {currentIdx + 1}/{quiz.questions?.length}</Typography>
         <Typography variant="h6" color={timeLeft < 10 ? 'error' : 'inherit'}>
-          Time: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+          Осталось: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
         </Typography>
       </Box>
       <LinearProgress variant="determinate" value={((currentIdx) / quiz.questions!.length) * 100} sx={{ mb: 4 }} />
@@ -90,7 +96,7 @@ const QuizPlayer = ({ quiz, onComplete }: Props) => {
           onClick={handleNext}
           disabled={selectedAnswers.length === 0}
         >
-          {currentIdx + 1 === quiz.questions?.length ? "Finish" : "Next"}
+          {currentIdx + 1 === quiz.questions?.length ? 'Завершить' : 'Далее'}
         </Button>
       </Paper>
     </Box>

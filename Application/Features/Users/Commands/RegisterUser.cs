@@ -32,7 +32,7 @@ public class RegisterUser
 
             var user = new User
             {
-                DisplayName = request.Email.Split('@')[0],
+                DisplayName = request.DisplayName,
                 Email = request.Email,
                 PasswordHash = passwordHash,
                 RoleId = role.Id

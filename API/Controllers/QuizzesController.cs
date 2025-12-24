@@ -34,6 +34,15 @@ public class QuizzesController : BaseApiController
         return Ok(new { Id = id });
     }
 
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> PutQuiz(string id, PostQuizDto quizDto)
+    {
+        await Mediator.Send(new PutQuiz.Command() { Id = id, PostQuizDto = quizDto });
+
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> DeleteQuiz(string id)
@@ -47,6 +56,15 @@ public class QuizzesController : BaseApiController
     public async Task<ActionResult<IEnumerable<GetQuestionDto>>> GetQuestionByQuiz(string quizID)
     {
         var questions = await Mediator.Send(new GetQuestionsByQuiz.Query() { QuizId = quizID });
+
+        return Ok(questions);
+    }
+
+    [HttpGet("{quizId}/admin")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<IEnumerable<GetQuestionAdminDto>>> GetQuestionByQuizAdmin(string quizID)
+    {
+        var questions = await Mediator.Send(new GetQuestionsByQuizAdmin.Query() { QuizId = quizID });
 
         return Ok(questions);
     }

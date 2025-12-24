@@ -1,4 +1,3 @@
-// src/components/QuizResult.tsx
 import { Paper, Typography, Button } from '@mui/material';
 
 interface ResultProps {
@@ -13,11 +12,11 @@ const QuizResult = ({ correct, total, timeTaken, onBack }: ResultProps) => {
 
   return (
     <Paper elevation={3} sx={{ p: 6, textAlign: 'center', maxWidth: 500, mx: 'auto', mt: 8 }}>
-      <Typography variant="h4" gutterBottom>Quiz Completed!</Typography>
+      <Typography variant="h4" gutterBottom>Викторина завершена</Typography>
       <Typography variant="h2" color="primary" sx={{ my: 2 }}>{score.toFixed(0)}%</Typography>
-      <Typography variant="body1">Correct Answers: {correct} / {total}</Typography>
-      <Typography variant="body1" sx={{ mb: 4 }}>Time Taken: {timeTaken} seconds</Typography>
-      <Button variant="contained" onClick={onBack}>Back to Dashboard</Button>
+      <Typography variant="body1">Правильных ответов: {correct} / {total}</Typography>
+      <Typography variant="body1" sx={{ mb: 4 }}>Затраченное время: {timeTaken} сек</Typography>
+      <Button variant="contained" onClick={onBack}>Вернуться на главную</Button>
     </Paper>
   );
 };
